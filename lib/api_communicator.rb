@@ -16,10 +16,44 @@ def get_character_movies_from_api(character_name)
   # this collection will be the argument given to `print_movies`
   #  and that method will do some nice presentation stuff like puts out a list
   #  of movies by title. Have a play around with the puts with other info about a given film.
+
+
+ 
+character_database = response_hash["results"]
+  i = 0
+  movie_apis = "none"
+  until i >= character_database.length
+    if character_database[i]["name"].downcase == character_name
+      movie_apis = character_database[i]["films"]
+      i = i + 1
+    else
+      i = i + 1
+   end  
+  end
+  if movie_apis == "none"
+    return nil
+  end 
+  n = 0
+  movie_hashes = []
+  until n >= movie_apis.length
+    movie_response = RestClient.get(movie_apis[n])
+    movie_hashes.push(JSON.parse(movie_response))
+    n = n + 1
+  end
+  return movie_hashes
 end
 
 def print_movies(films)
   # some iteration magic and puts out the movies in a nice list
+  if films == nil
+    puts "Please rerun code and enter a valid character name."
+    return nil
+  end
+  i = 0
+  until i >= films.length
+    puts films[i]["title"]
+    i = i + 1
+  end 
 end
 
 def show_character_movies(character)
